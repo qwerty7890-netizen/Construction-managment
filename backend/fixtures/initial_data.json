@@ -1,0 +1,137 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "username": "admin",
+      "password": "pbkdf2_sha256$870000$initial$hash",
+      "email": "admin@constructora.com",
+      "first_name": "Administrador",
+      "last_name": "Sistema",
+      "role": "admin",
+      "is_staff": true,
+      "is_superuser": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "personnel.department",
+    "pk": 1,
+    "fields": {"name": "Dirección", "description": "Alta dirección de la empresa"}
+  },
+  {
+    "model": "personnel.department",
+    "pk": 2,
+    "fields": {"name": "Obras", "description": "Ejecución de proyectos"}
+  },
+  {
+    "model": "personnel.department",
+    "pk": 3,
+    "fields": {"name": "Maquinaria", "description": "Operación y mantenimiento de equipos"}
+  },
+  {
+    "model": "personnel.department",
+    "pk": 4,
+    "fields": {"name": "Almacén", "description": "Control de materiales e inventario"}
+  },
+  {
+    "model": "personnel.department",
+    "pk": 5,
+    "fields": {"name": "Administrativo", "description": "Contabilidad, RRHH, administración"}
+  },
+  {
+    "model": "warehouse.materialcategory",
+    "pk": 1,
+    "fields": {"name": "Concreto y Mezclas", "description": ""}
+  },
+  {
+    "model": "warehouse.materialcategory",
+    "pk": 2,
+    "fields": {"name": "Acero y Metales", "description": ""}
+  },
+  {
+    "model": "warehouse.materialcategory",
+    "pk": 3,
+    "fields": {"name": "Agregados", "description": ""}
+  },
+  {
+    "model": "warehouse.materialcategory",
+    "pk": 4,
+    "fields": {"name": "Combustibles y Lubricantes", "description": ""}
+  },
+  {
+    "model": "warehouse.materialcategory",
+    "pk": 5,
+    "fields": {"name": "Herramientas", "description": ""}
+  },
+  {
+    "model": "warehouse.materialcategory",
+    "pk": 6,
+    "fields": {"name": "EPP y Seguridad", "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 1,
+    "fields": {"code": "1", "name": "ACTIVOS", "account_type": "activo", "parent": null, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 2,
+    "fields": {"code": "11", "name": "Efectivo y Equivalentes", "account_type": "activo", "parent": 1, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 3,
+    "fields": {"code": "13", "name": "Cuentas por Cobrar", "account_type": "activo", "parent": 1, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 4,
+    "fields": {"code": "15", "name": "Inventarios", "account_type": "activo", "parent": 1, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 5,
+    "fields": {"code": "2", "name": "PASIVOS", "account_type": "pasivo", "parent": null, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 6,
+    "fields": {"code": "22", "name": "Cuentas por Pagar", "account_type": "pasivo", "parent": 5, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 7,
+    "fields": {"code": "3", "name": "PATRIMONIO", "account_type": "patrimonio", "parent": null, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 8,
+    "fields": {"code": "4", "name": "INGRESOS", "account_type": "ingreso", "parent": null, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 9,
+    "fields": {"code": "41", "name": "Ingresos Operacionales", "account_type": "ingreso", "parent": 8, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 10,
+    "fields": {"code": "5", "name": "GASTOS Y COSTOS", "account_type": "gasto", "parent": null, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 11,
+    "fields": {"code": "51", "name": "Costos de Construcción", "account_type": "costo", "parent": 10, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 12,
+    "fields": {"code": "52", "name": "Gastos de Personal", "account_type": "gasto", "parent": 10, "is_active": true, "description": ""}
+  },
+  {
+    "model": "accounting.account",
+    "pk": 13,
+    "fields": {"code": "53", "name": "Gastos Administrativos", "account_type": "gasto", "parent": 10, "is_active": true, "description": ""}
+  }
+]
