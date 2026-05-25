@@ -30,16 +30,17 @@ type MaintenanceForm = z.infer<typeof maintenanceSchema>
 
 const fuelSchema = z.object({
   date: z.string().min(1, 'Requerido'),
-  liters: z.string().min(1, 'Requerido'),
-  cost_per_liter: z.string().optional(),
-  hours_at_fueling: z.string().optional(),
+  gallons: z.string().min(1, 'Requerido'),
+  unit_cost: z.string().optional(),
+  total_cost: z.string().optional(),
+  hourmeter: z.string().optional(),
   project: z.string().optional(),
 })
 type FuelForm = z.infer<typeof fuelSchema>
 
 interface Project { id: number; name: string; code: string }
 interface Maintenance { id: number; maintenance_type: string; maintenance_type_display: string; description: string; date: string; cost: string; hours_at_maintenance: string }
-interface FuelLog { id: number; date: string; liters: string; cost_per_liter: string; hours_at_fueling: string; project_name: string | null }
+interface FuelLog { id: number; date: string; gallons: string; unit_cost: string; total_cost: string; hourmeter: string | null; project_name: string | null }
 
 export default function EquipmentDetail() {
   const { id } = useParams()
@@ -203,9 +204,9 @@ export default function EquipmentDetail() {
                   <thead className="bg-gray-50 text-gray-600">
                     <tr>
                       <th className="text-left px-6 py-3">Fecha</th>
-                      <th className="text-right px-6 py-3">Litros</th>
-                      <th className="text-right px-6 py-3">Costo/L</th>
-                      <th className="text-right px-6 py-3">Horas</th>
+                      <th className="text-right px-6 py-3">Galones</th>
+                      <th className="text-right px-6 py-3">Costo/Gal</th>
+                      <th className="text-right px-6 py-3">Horómetro</th>
                       <th className="text-left px-6 py-3">Proyecto</th>
                     </tr>
                   </thead>
@@ -213,9 +214,9 @@ export default function EquipmentDetail() {
                     {fuelLogs.map((f) => (
                       <tr key={f.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 text-gray-700">{f.date}</td>
-                        <td className="px-6 py-4 text-right">{Number(f.liters).toLocaleString('es-CO', { maximumFractionDigits: 2 })}</td>
-                        <td className="px-6 py-4 text-right">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(Number(f.cost_per_liter))}</td>
-                        <td className="px-6 py-4 text-right">{f.hours_at_fueling} h</td>
+                        <td className="px-6 py-4 text-right">{Number(f.gallons).toLocaleString('es-CO', { maximumFractionDigits: 2 })}</td>
+                        <td className="px-6 py-4 text-right">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(Number(f.unit_cost))}</td>
+                        <td className="px-6 py-4 text-right">{f.hourmeter ? `${f.hourmeter} h` : '—'}</td>
                         <td className="px-6 py-4 text-gray-500">{f.project_name || '—'}</td>
                       </tr>
                     ))}
@@ -270,14 +271,14 @@ export default function EquipmentDetail() {
             <FormField label="Fecha" required error={fForm.formState.errors.date?.message}>
               <input {...fForm.register('date')} type="date" className={inputClass} />
             </FormField>
-            <FormField label="Litros" required error={fForm.formState.errors.liters?.message}>
-              <input {...fForm.register('liters')} type="number" step="0.01" className={inputClass} placeholder="0" />
+            <FormField label="Galones" required error={fForm.formState.errors.gallons?.message}>
+              <input {...fForm.register('gallons')} type="number" step="0.01" className={inputClass} placeholder="0" />
             </FormField>
-            <FormField label="Costo por Litro" error={fForm.formState.errors.cost_per_liter?.message}>
-              <input {...fForm.register('cost_per_liter')} type="number" step="0.01" className={inputClass} placeholder="0" />
+            <FormField label="Costo por Galón (COP)" error={fForm.formState.errors.unit_cost?.message}>
+              <input {...fForm.register('unit_cost')} type="number" step="0.01" className={inputClass} placeholder="0" />
             </FormField>
-            <FormField label="Horas al momento" error={fForm.formState.errors.hours_at_fueling?.message}>
-              <input {...fForm.register('hours_at_fueling')} type="number" step="0.1" className={inputClass} placeholder="0" />
+            <FormField label="Horómetro actual (h)" error={fForm.formState.errors.hourmeter?.message}>
+              <input {...fForm.register('hourmeter')} type="number" step="0.1" className={inputClass} placeholder="0" />
             </FormField>
           </div>
           <FormField label="Proyecto (opcional)" error={fForm.formState.errors.project?.message}>

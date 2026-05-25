@@ -19,7 +19,10 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_type_display = serializers.CharField(source='get_project_type_display', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     director_name = serializers.CharField(source='director.get_full_name', read_only=True)
-    resident_name = serializers.CharField(source='resident.get_full_name', read_only=True)
+    resident_name = serializers.SerializerMethodField()
+
+    def get_resident_name(self, obj):
+        return obj.resident.get_full_name() if obj.resident else None
 
     class Meta:
         model = Project

@@ -51,10 +51,20 @@ export default function Sidebar() {
       </nav>
 
       <div className="border-t border-gray-700 p-4">
-        <div className="text-xs text-gray-400 mb-3">
-          <p className="font-medium text-white">{user?.first_name} {user?.last_name}</p>
-          <p>{user?.role}</p>
-        </div>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
+            `flex items-center gap-2 text-sm mb-3 transition-colors ${isActive ? 'text-yellow-400' : 'text-gray-300 hover:text-white'}`
+          }
+        >
+          <div className="w-7 h-7 rounded-full bg-yellow-400 flex items-center justify-center text-gray-900 font-bold text-xs shrink-0">
+            {user?.first_name?.[0]}{user?.last_name?.[0]}
+          </div>
+          <div className="min-w-0">
+            <p className="font-medium text-white text-xs truncate">{user?.first_name} {user?.last_name}</p>
+            <p className="text-gray-400 text-xs capitalize">{user?.role}</p>
+          </div>
+        </NavLink>
         <button
           onClick={logout}
           className="flex items-center gap-2 text-sm text-gray-400 hover:text-red-400 transition-colors w-full"

@@ -6,6 +6,7 @@ import api from '../../api/client'
 import { Card, CardHeader, CardBody } from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
 import ConfirmDialog from '../../components/ui/ConfirmDialog'
+import Pagination from '../../components/ui/Pagination'
 import type { PaginatedResponse, Project } from '../../types'
 
 const statusColor: Record<string, 'green' | 'blue' | 'yellow' | 'gray' | 'red'> = {
@@ -19,13 +20,14 @@ function formatCurrency(v: string) {
 
 export default function ProjectList() {
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery<PaginatedResponse<Project>>({
-    queryKey: ['projects', search],
-    queryFn: async () => (await api.get('/projects/projects/', { params: { search } })).data,
+    queryKey: ['projects', search, page],
+    queryFn: async () => (await api.get('/projects/projects/', { params: { search, page } })).data,
   })
 
   const deleteMutation = useMutation({
@@ -129,6 +131,10 @@ export default function ProjectList() {
           )}
         </CardBody>
       </Card>
+
+      {data && data.count > 20 && (
+        <Pagination count={data.count} page={page} onPageChange={setPage} />
+      )}
 
       <ConfirmDialog
         isOpen={deleteId !== null}

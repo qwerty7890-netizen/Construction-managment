@@ -45,6 +45,9 @@ import AdministrationList from './pages/administration/AdministrationList'
 import ClientForm from './pages/administration/ClientForm'
 import ContractorForm from './pages/administration/ContractorForm'
 
+// Profile
+import ProfilePage from './pages/profile/ProfilePage'
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -117,6 +120,9 @@ export default function App() {
             <Route path="administration" element={<AdministrationList />} />
             <Route path="administration/clients/new" element={<ClientForm />} />
             <Route path="administration/contractors/new" element={<ContractorForm />} />
+
+            {/* Profile */}
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

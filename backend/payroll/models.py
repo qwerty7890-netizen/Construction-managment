@@ -75,6 +75,31 @@ class PayrollEntry(models.Model):
     def __str__(self):
         return f"{self.period} - {self.employee}"
 
+    def calculate(self):
+        from decimal import Decimal
+        self.total_devengado = (
+            self.base_salary + self.transportation_allowance +
+            self.extra_pay + self.bonuses + self.vacation_pay
+        )
+        self.health_deduction = (self.base_salary * Decimal('0.04')).quantize(Decimal('0.01'))
+        self.pension_deduction = (self.base_salary * Decimal('0.04')).quantize(Decimal('0.01'))
+        self.total_deductions = (
+            self.health_deduction + self.pension_deduction +
+            self.other_deductions + self.advances
+        )
+        self.net_pay = self.total_devengado - self.total_deductions
+        # Aportes patronales
+        self.employer_health = (self.base_salary * Decimal('0.085')).quantize(Decimal('0.01'))
+        self.employer_pension = (self.base_salary * Decimal('0.12')).quantize(Decimal('0.01'))
+        self.arl = (self.base_salary * Decimal('0.00522')).quantize(Decimal('0.01'))
+        self.ccf = (self.base_salary * Decimal('0.04')).quantize(Decimal('0.01'))
+        self.icbf = (self.base_salary * Decimal('0.03')).quantize(Decimal('0.01'))
+        self.sena = (self.base_salary * Decimal('0.02')).quantize(Decimal('0.01'))
+
+    def save(self, *args, **kwargs):
+        self.calculate()
+        super().save(*args, **kwargs)
+
 
 class SalaryAdvance(models.Model):
     STATUS_CHOICES = [
