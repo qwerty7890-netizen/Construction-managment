@@ -1,15 +1,19 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { Package, AlertTriangle, Search } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
+import { Package, AlertTriangle, Search, Plus, Trash2 } from 'lucide-react'
 import api from '../../api/client'
 import { Card, CardHeader, CardBody } from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
 import StatCard from '../../components/ui/StatCard'
+import ConfirmDialog from '../../components/ui/ConfirmDialog'
 import type { PaginatedResponse, Material } from '../../types'
 
 export default function WarehouseList() {
   const [search, setSearch] = useState('')
   const [showLowStock, setShowLowStock] = useState(false)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery<PaginatedResponse<Material>>({
     queryKey: ['materials', search],
@@ -21,13 +25,34 @@ export default function WarehouseList() {
     queryFn: async () => (await api.get('/warehouse/materials/low_stock/')).data,
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => (await api.delete(`/warehouse/materials/${id}/`)).data,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['materials'] })
+      setDeleteId(null)
+    },
+  })
+
   const materials = showLowStock ? (lowStockData || []) : (data?.results || [])
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Almacén de Materiales</h1>
-        <p className="text-gray-500 text-sm">{data?.count ?? 0} materiales registrados</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Almacén de Materiales</h1>
+          <p className="text-gray-500 text-sm">{data?.count ?? 0} materiales registrados</p>
+        </div>
+        <div className="flex gap-2">
+          <Link to="/warehouse/entries/new" className="flex items-center gap-2 border border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold px-4 py-2 rounded-lg text-sm">
+            <Plus size={16} />Entrada
+          </Link>
+          <Link to="/warehouse/exits/new" className="flex items-center gap-2 border border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold px-4 py-2 rounded-lg text-sm">
+            <Plus size={16} />Salida
+          </Link>
+          <Link to="/warehouse/materials/new" className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-4 py-2 rounded-lg">
+            <Plus size={18} />Nuevo Material
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -73,6 +98,7 @@ export default function WarehouseList() {
                     <th className="text-right px-6 py-3">Stock Mínimo</th>
                     <th className="text-right px-6 py-3">Precio Unit.</th>
                     <th className="text-left px-6 py-3">Estado</th>
+                    <th className="text-left px-6 py-3">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -90,6 +116,17 @@ export default function WarehouseList() {
                       <td className="px-6 py-4">
                         {m.is_low_stock ? <Badge variant="red">Bajo Stock</Badge> : <Badge variant="green">OK</Badge>}
                       </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setDeleteId(m.id)}
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-600"
+                            title="Eliminar"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -98,6 +135,15 @@ export default function WarehouseList() {
           )}
         </CardBody>
       </Card>
+
+      <ConfirmDialog
+        isOpen={deleteId !== null}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => deleteId && deleteMutation.mutate(deleteId)}
+        title="Eliminar Material"
+        message="¿Está seguro de que desea eliminar este material? Esta acción no se puede deshacer."
+        loading={deleteMutation.isPending}
+      />
     </div>
   )
 }
